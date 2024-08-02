@@ -53,7 +53,7 @@ def capture_picture(folder):
     cap.release()
 
 
-def capture_screenshot(folder, app):
+def capture_screenshot(folder):
     # Take a screenshot
     screenshot = pyautogui.screenshot()
     
@@ -62,13 +62,10 @@ def capture_screenshot(folder, app):
     filename = os.path.join(folder, f"screenshot_{timestamp}.png")
     screenshot.save(filename)
     print(f"Captured {filename}")
-    
-    # Get mouse position
-    mouse_x, mouse_y = pyautogui.position()
-    app.update_mouse_position(timestamp, mouse_x, mouse_y)
 
 
-def start_capturing(app):
+def main():
+    gui.main()
     picture_folder = "pictures"
     screenshot_folder = "screenshots"
     interval = 3
@@ -80,7 +77,7 @@ def start_capturing(app):
 
     for i in range(1, count + 1):
         picture_thread = Thread(target=lambda: capture_picture(picture_folder))
-        screenshot_thread = Thread(target=lambda: capture_screenshot(screenshot_folder, app))
+        screenshot_thread = Thread(target=lambda: capture_screenshot(screenshot_folder))
         
         picture_thread.start()
         screenshot_thread.start()
@@ -91,21 +88,6 @@ def start_capturing(app):
         time.sleep(interval)
     
     print("Finished capturing pictures and screenshots.")
-
-
-def main():
-    # Start the GUI in the main thread
-    gui_thread = Thread(target=gui.main)
-    gui_thread.start()
-
-    # Wait for the GUI to initialize and get the app instance
-    time.sleep(2)
-    app = gui.app_instance
-
-    # Start capturing in a separate thread
-    capture_thread = Thread(target=start_capturing, args=(app,))
-    capture_thread.start()
-
 
 if __name__ == "__main__":
     main()

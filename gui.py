@@ -3,7 +3,6 @@ from tkinter import Label
 import time
 import threading
 from datetime import datetime
-import pyautogui
 
 class FocusTrackerGUI:
     def __init__(self, root):
@@ -22,15 +21,10 @@ class FocusTrackerGUI:
         self.suggestions_text = Label(self.root, text="Placeholder for suggestions based on focus and activity", font=("Helvetica", 14))
         self.suggestions_text.pack(pady=10)
 
-        # Mouse position display
-        self.mouse_label = Label(self.root, text="Mouse Position: (0, 0)", font=("Helvetica", 14))
-        self.mouse_label.pack(pady=10)
-
         # Initialize variables
         self.start_time = None
         self.running = False
         self.elapsed_time = 0
-        self.last_two_mouse_positions = []
 
         # Start/Stop button
         self.start_stop_button = tk.Button(self.root, text="Start", font=("Helvetica", 14), command=self.start_stop)
@@ -68,30 +62,10 @@ class FocusTrackerGUI:
         self.elapsed_time = 0
         self.timer_label.config(text="Timer: 00:00")
         self.start_stop_button.config(text="Start")
-        self.last_two_mouse_positions.clear()
-        self.mouse_label.config(text="Mouse Position: (0, 0)")
-
-    def update_mouse_position(self, timestamp, x, y):
-        self.last_two_mouse_positions.append((timestamp, x, y))
-        if len(self.last_two_mouse_positions) > 2:
-            self.last_two_mouse_positions.pop(0)
-        self.update_mouse_label()
-
-    def update_mouse_label(self):
-        if len(self.last_two_mouse_positions) > 0:
-            last_positions = "\n".join([f"Time: {pos[0]}, Position: ({pos[1]}, {pos[2]})" for pos in self.last_two_mouse_positions])
-            self.mouse_label.config(text=f"Last Two Mouse Positions:\n{last_positions}")
-
-app_instance = None
-
-def set_app_instance(instance):
-    global app_instance
-    app_instance = instance
 
 def main():
     root = tk.Tk()
     app = FocusTrackerGUI(root)
-    set_app_instance(app)
     root.mainloop()
 
 if __name__ == "__main__":
